@@ -28,33 +28,34 @@ class PrestamoController extends Controller
             'fecha_prestamo' => 'required|date',
             'fecha_devolucion' => 'required|date',
         ]);
-
+    
         $book = Libro::find($request->book_id);
-
+    
         if (!$book) {
             return redirect()->route('prestamos.create')->with('error', 'El libro no existe.');
         }
-
+    
         if (!$book->disponible) {
             return redirect()->route('prestamos.create')->with('error', 'El libro no está disponible.');
         }
-
+    
+        $user = auth()->user();
+    
         $prestamo = new Prestamo([
             'book_id' => $request->book_id,
+            'user_id' => $user->id, 
             'fecha_prestamo' => $request->fecha_prestamo,
             'fecha_devolucion' => $request->fecha_devolucion,
-            'devuelto' => false, // Por defecto, el libro no se ha devuelto al crear el préstamo
+            'devuelto' => false,
         ]);
-
+    
         $prestamo->save();
-
-        // Actualizar el estado del libro
+    
         $book->disponible = false;
         $book->save();
-
+    
         return redirect()->route('prestamos.index')->with('success', 'Préstamo creado exitosamente.');
     }
-
     public function show($id)
     {
         $prestamo = Prestamo::findOrFail($id);

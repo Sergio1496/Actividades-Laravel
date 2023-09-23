@@ -1,3 +1,4 @@
+@auth
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -13,6 +14,7 @@
     @endif
     <form method="POST" action="{{ route('prestamos.store') }}">
         @csrf
+        @method('PUT')
         <div class="form-group">
             <label for="book_id">Libro:</label>
             <select name="book_id" class="form-control" required>
@@ -34,3 +36,4 @@
 </div>
 </body>
 </html>
+@endauth

@@ -37,3 +37,21 @@ Route::get('/prestamos/{id}/edit', [PrestamoController::class, 'edit'])->name('p
 Route::put('/prestamos/{id}', [PrestamoController::class, 'update'])->name('prestamos.update');
 Route::delete('/prestamos/{id}', [PrestamoController::class, 'destroy'])->name('prestamos.destroy');
 Route::put('/prestamos/{id}/finalizar', [PrestamoController::class, 'finalizar'])->name('prestamos.finalizar');
+
+// Rutas protegidas para usuarios autenticados
+Route::middleware(['auth'])->group(function () {
+    // Rutas para el controlador de préstamos
+    Route::get('/prestamos/create', [PrestamoController::class, 'create'])->name('prestamos.create');
+    Route::post('/prestamos', [PrestamoController::class, 'store'])->name('prestamos.store');
+    Route::post('/prestamos/{id}/finalizar', [PrestamoController::class, 'finalizar'])->name('prestamos.finalizar');
+});
+
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+});
